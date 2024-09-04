@@ -1,0 +1,9 @@
+node_modules/
+.env
+
+public/images/^image-
+
+public/images/*.jpeg
+public/images/*.png
+public/images/*.jpg
+

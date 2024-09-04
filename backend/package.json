@@ -6,7 +6,8 @@
     "start": "npx tsc && ts-node dist/server",
     "dev": "nodemon --watch ./src --exec ts-node server.ts",
     "build": "npx tsc",
-    "test": "jest"
+    "test": "jest",
+    "prod": "npx tsc && npx prisma migrate dev && ts-node dist/server"
   },
   "keywords": [],
   "author": "",

@@ -7,7 +7,7 @@
     "dev": "nodemon --watch ./src --exec ts-node server.ts",
     "build": "npx tsc",
     "test": "jest",
-    "prod": "npx tsc && npx prisma migrate dev && ts-node dist/server"
+    "prod": "npm install && npx tsc && npx prisma migrate dev && ts-node dist/server"
   },
   "keywords": [],
   "author": "",

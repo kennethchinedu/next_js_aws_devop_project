@@ -45,6 +45,7 @@ const IngredientFields: React.FC<IngredientFieldsProps> = ({
   return (
     <div>
       <div className="flex items-center gap-2 py-2">
+        <div>Add Ingredient</div>
         <TextField
           color="success"
           inputRef={nameRef}
@@ -70,7 +71,7 @@ const IngredientFields: React.FC<IngredientFieldsProps> = ({
         </Button>
       </div>
       <fieldset className="py-2">
-        <legend className="font-bold">ingredients added </legend>
+        <legend className="font-bold">added ingredients</legend>
         <div
           className="grid gap-4"
           style={{

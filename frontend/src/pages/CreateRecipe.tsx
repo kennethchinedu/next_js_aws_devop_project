@@ -110,10 +110,10 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
           queryKey: ["recipe-detail", data.data.id.toString()],
           exact: true,
         });
-        queryClient.invalidateQueries({
-          queryKey: ["recipe-list"],
-        });
       }
+      queryClient.invalidateQueries({
+        queryKey: ["recipe-list"],
+      });
       navigate(
         `${routes.RECIPE.replace(":slug", data.data.slug ?? "").replace(":id", (data.data.id ?? "").toString())}`,
       );

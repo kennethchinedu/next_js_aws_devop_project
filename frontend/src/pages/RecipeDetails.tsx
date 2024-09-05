@@ -1,7 +1,6 @@
 import LoadingComponent from "@/components/loaders/LoadingComponent";
 import DottedListings from "@/components/utils/DottedListings";
 import routes from "@/navigation/routes";
-import useAuthStore from "@/store/userStore";
 import { incomingData, recipeType } from "@/types/general";
 import { api } from "@/utilities";
 import { appToast } from "@/utilities/appToast";
@@ -14,7 +13,6 @@ type RecipeDetailsProps = {};
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({}) => {
   const { id } = useParams();
-  const username = useAuthStore((state) => state.user?.username);
   const navigate = useNavigate();
 
   const url = routes.BACKEND.RECIPE_DETAIL.replace(":id", id ?? "");
@@ -47,25 +45,8 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({}) => {
             className="mx-auto gap-12 py-8 lg:max-w-[1000px]"
           >
             <section className="col-span-12 w-full">
-              {username === data.data.username && (
-                <div className="flex w-full items-center justify-end gap-4 py-2">
-                  <Link
-                    to={routes.EDIT.replace(":id", data.data.id.toString())}
-                  >
-                    <Button
-                      variant="contained"
-                      disableElevation
-                      sx={{
-                        paddingLeft: "2rem",
-                        paddingRight: "2rem",
-                        fontWeight: "bold",
-                      }}
-                      size="large"
-                      color="success"
-                    >
-                      Edit
-                    </Button>
-                  </Link>
+              <div className="flex w-full items-center justify-end gap-4 py-2">
+                <Link to={routes.EDIT.replace(":id", data.data.id.toString())}>
                   <Button
                     variant="contained"
                     disableElevation
@@ -75,13 +56,26 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({}) => {
                       fontWeight: "bold",
                     }}
                     size="large"
-                    color="error"
-                    onClick={() => mutation.mutate()}
+                    color="success"
                   >
-                    Delete
+                    Edit
                   </Button>
-                </div>
-              )}
+                </Link>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  sx={{
+                    paddingLeft: "2rem",
+                    paddingRight: "2rem",
+                    fontWeight: "bold",
+                  }}
+                  size="large"
+                  color="error"
+                  onClick={() => mutation.mutate()}
+                >
+                  Delete
+                </Button>
+              </div>
               <img
                 src={data.data.image}
                 className="h-[500px] w-full object-cover"
@@ -90,9 +84,9 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({}) => {
               <h1 id="title" className="pt-4 text-2xl font-bold">
                 {data.data.title}
               </h1>
-              <div>
+              {/* <div>
                 created by: <i>{data.data.username}</i>
-              </div>
+              </div> */}
             </section>
             <section className="col-span-12 w-full">
               <h2 className="py-2 text-lg font-bold">Ingredients</h2>

@@ -3,7 +3,6 @@ import FileInput from "@/components/forms/FileInput";
 import IngredientFields from "@/components/forms/IngredientFields";
 import { ACCEPTED_FILE_TYPES, MAX_UPLOAD_SIZE } from "@/constants";
 import routes from "@/navigation/routes";
-import useAuthStore from "@/store/userStore";
 import { incomingData, recipeType } from "@/types/general";
 import { api } from "@/utilities";
 import { appToast } from "@/utilities/appToast";
@@ -75,7 +74,6 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
     resolver: zodResolver(schema),
   });
 
-  const username = useAuthStore((state) => state.user?.username);
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
@@ -93,7 +91,6 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
         ingredients: data.ingredients,
         instructions: data.instructions,
         image: src,
-        username: username,
       };
       if (kind === "create") {
         return (await appAxios.post(submitTo, data_)).data;

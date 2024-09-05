@@ -1,7 +1,7 @@
 export default Object.freeze({
   // AUTH
   HOME_PAGE: "/",
-  REGISTER_PAGE: "/register",
+  // REGISTER_PAGE: "/register",
   LOGIN: "/login",
   CREATE: "/create-recipe",
   EDIT: "/edit/:id",

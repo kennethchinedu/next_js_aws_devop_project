@@ -20,6 +20,6 @@ model Recipe {
     instructions String
     image String
     ingredients Json
-    username String 
+    username String? 
     dateCreated DateTime  @default(now()) @map("date_created")
 }

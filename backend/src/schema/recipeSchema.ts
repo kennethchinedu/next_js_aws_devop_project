@@ -13,7 +13,6 @@ export const createUpdateSchema = zod
     }),
     instructions: zod.string().min(20),
     image: zod.string(),
-    username: zod.string(),
   })
   .required();
 
@@ -22,5 +21,4 @@ export const patchSchema = zod.object({
   ingredients: zod.array(ingredientSchema).optional(),
   instructions: zod.string().min(20).optional(),
   image: zod.string().optional(),
-  username: zod.string().optional(),
 });

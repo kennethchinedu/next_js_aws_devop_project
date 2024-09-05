@@ -106,7 +106,7 @@ describe("recipe", () => {
         .patch("/api/v1/recipes/1")
         .send(data)
         .expect(200);
-      console.log(resp.body);
+
       expect(resp.body.data.title).toEqual(data.title);
     });
   });

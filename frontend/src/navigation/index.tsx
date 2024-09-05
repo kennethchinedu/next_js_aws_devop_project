@@ -3,13 +3,12 @@ import Layout from "@/components/layout/Layout";
 import WelcomeLoader from "@/components/loaders/WelcomeLoader";
 import EditPage from "@/pages/EditPage";
 import PageNotFound from "@/pages/PageNotFound";
-import { lazy, ReactElement } from "react";
+import { lazy } from "react";
 import {
   createBrowserRouter,
   RouteObject,
   RouterProvider,
 } from "react-router-dom";
-import AuthGuard from "./guard";
 import routes from "./routes";
 
 type ExtendedRouteObject = RouteObject & {
@@ -17,8 +16,6 @@ type ExtendedRouteObject = RouteObject & {
   anonymousOnly?: boolean;
 };
 
-const Signup = lazy(() => import("@/pages/Signup"));
-const Login = lazy(() => import("@/pages/Login"));
 const CreateRecipe = lazy(() => import("@/pages/CreateRecipe"));
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const RecipeDetails = lazy(() => import("@/pages/RecipeDetails"));
@@ -49,18 +46,18 @@ const protectedRoutes: ExtendedRouteObject[] = [
 ];
 
 const unAuthenticatedOnlyRoute: ExtendedRouteObject[] = [
-  {
-    path: routes.LOGIN,
-    element: <Login />,
-    anonymousOnly: true,
-    // errorElement: <ErrorBoundary />,
-  },
-  {
-    path: routes.REGISTER_PAGE,
-    element: <Signup />,
-    anonymousOnly: true,
-    // errorElement: <ErrorBoundary />,
-  },
+  // {
+  //   path: routes.LOGIN,
+  //   element: <Login />,
+  //   anonymousOnly: true,
+  //   // errorElement: <ErrorBoundary />,
+  // },
+  // {
+  //   path: routes.REGISTER_PAGE,
+  //   element: <Signup />,
+  //   anonymousOnly: true,
+  //   // errorElement: <ErrorBoundary />,
+  // },
 ];
 
 const unProtectedRoute: ExtendedRouteObject[] = [
@@ -101,12 +98,12 @@ const allRoutes: ExtendedRouteObject[] = [
 ];
 
 const appRoutes = allRoutes.map((route) => {
-  if (route?.protected && route?.element) {
-    route.element = (
-      <AuthGuard route={route} component={route.element as ReactElement} />
-    );
-  } else if (route?.anonymousOnly) {
-  }
+  // if (route?.protected && route?.element) {
+  //   route.element = (
+  //     <AuthGuard route={route} component={route.element as ReactElement} />
+  //   );
+  // } else if (route?.anonymousOnly) {
+  // }
 
   return route;
 });

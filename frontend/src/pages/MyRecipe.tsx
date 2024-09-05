@@ -8,7 +8,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 type MyRecipeProps = {};
 const MyRecipe: React.FC<MyRecipeProps> = ({}) => {
-  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["recipe-list"],
       queryFn: async ({
@@ -50,6 +50,7 @@ const MyRecipe: React.FC<MyRecipeProps> = ({}) => {
         </div>
         <LoadingComponent
           className="col-span-12"
+          isLoading={isLoading}
           isEmpty={cards.length < 1}
           isFetching={isFetchingNextPage}
         >

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 type HomePageProps = {};
 
 const HomePage: React.FC<HomePageProps> = ({}) => {
-  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["recipe-list"],
       queryFn: async ({
@@ -73,6 +73,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
       <LoadingComponent
         className="col-span-12"
         isEmpty={cards.length < 1}
+        isLoading={isLoading}
         isFetching={isFetchingNextPage}
       >
         <section

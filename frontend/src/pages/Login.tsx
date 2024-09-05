@@ -81,12 +81,12 @@ const Login: React.FC<LoginProps> = ({}) => {
               />
             </div>
             <div className="flex items-center justify-between py-3">
-              <Link to={routes.REGISTER_PAGE} className="text-[#1e90ff]">
+              {/* <Link to={routes.REGISTER_PAGE} className="text-[#1e90ff]">
                 signup instead
               </Link>
               <Link to={routes.REGISTER_PAGE} className="text-[#1e90ff]">
                 forgot password
-              </Link>
+              </Link> */}
             </div>
             <Button
               className="w-full"

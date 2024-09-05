@@ -1,11 +1,11 @@
-import { create } from "zustand";
+import { createWithEqualityFn } from "zustand/traditional";
 
 type sideBarStoreI = {
   isOpen: boolean;
   toggle: () => void;
 };
 
-const useSideBarStore = create<sideBarStoreI>((set) => ({
+const useSideBarStore = createWithEqualityFn<sideBarStoreI>((set) => ({
   isOpen: false,
   toggle: () => {
     set((state) => ({ isOpen: !state.isOpen }));

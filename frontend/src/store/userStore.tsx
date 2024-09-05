@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { createWithEqualityFn } from "zustand/traditional";
 
 type userType = {
   username: string;
@@ -11,7 +11,7 @@ type authStore = {
   clear: () => void;
 };
 
-const useAuthStore = create<authStore>((set) => ({
+const useAuthStore = createWithEqualityFn<authStore>((set) => ({
   user: null,
   is_authenticated: false,
   clear: () => {

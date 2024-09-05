@@ -17,17 +17,6 @@ const LoadingComponent: React.FC<loadingComponentProps> = ({
   isLoading,
   children,
 }) => {
-  if (isEmpty) {
-    return (
-      <div className="col-span-12 flex w-full flex-col items-center justify-center gap-6 py-32">
-        <img src={food} className="w-40" />
-        <h2 className={`text-center text-lg font-bold ${className}`}>
-          seems there are no recipes created yet
-        </h2>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <Box
@@ -37,6 +26,17 @@ const LoadingComponent: React.FC<loadingComponentProps> = ({
         <CircularProgress color="success" />
         <div>loading please wait...</div>
       </Box>
+    );
+  }
+
+  if (isEmpty) {
+    return (
+      <div className="col-span-12 flex w-full flex-col items-center justify-center gap-6 py-32">
+        <img src={food} className="w-40" />
+        <h2 className={`text-center text-lg font-bold ${className}`}>
+          seems there are no recipes created yet
+        </h2>
+      </div>
     );
   }
 

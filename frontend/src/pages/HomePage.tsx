@@ -29,7 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
       getNextPageParam: (lastPage) => {
         const currentPage = lastPage.data?.currentPage ?? 0;
         const total = lastPage.data?.totalPages ?? 0;
-        return total > currentPage ? currentPage + 1 : currentPage;
+        return total > currentPage ? currentPage + 1 : undefined;
       },
       initialPageParam: 1,
     });

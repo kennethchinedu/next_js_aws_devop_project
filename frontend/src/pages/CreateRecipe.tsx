@@ -5,15 +5,20 @@ import { ACCEPTED_FILE_TYPES, MAX_UPLOAD_SIZE } from "@/constants";
 import routes from "@/navigation/routes";
 import useAuthStore from "@/store/userStore";
 import { incomingData, recipeType } from "@/types/general";
-import { api, imageSrc } from "@/utilities";
+import { api } from "@/utilities";
 import { appToast } from "@/utilities/appToast";
 import { appAxios } from "@/utilities/httConfig";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, LinearProgress } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { generateReactHelpers } from "@uploadthing/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z as zod } from "zod";
+
+const { uploadFiles } = generateReactHelpers({
+  url: import.meta.env.VITE_APP_BACKEND_BASE_URL + "/api/uploadthing",
+});
 
 const ingredientSchema = zod.object({
   name: zod.string(),
@@ -125,10 +130,9 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
       const fData = new FormData();
       fData.append("image", data);
       delete api.headers["Content-Type"];
-      return await api.post<incomingData<{ name: string }>>(
-        routes.BACKEND.UPLOAD_IMAGE,
-        fData,
-      );
+      return await uploadFiles("imageUploader", {
+        files: [data],
+      });
     },
   });
 
@@ -140,7 +144,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
     fileMutation
       .mutateAsync(data.image as unknown as File)
       .then((resp) => {
-        mutation.mutate({ data, src: resp.data?.data.name as string });
+        mutation.mutate({ data, src: resp[0].url });
       })
       .catch(() => {
         appToast.Error(
@@ -152,7 +156,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({
   const image = watch("image");
   const src = image
     ? typeof image === "string"
-      ? imageSrc(image)
+      ? image
       : ACCEPTED_FILE_TYPES.includes(image[0]?.type)
         ? URL.createObjectURL(image[0])
         : ""

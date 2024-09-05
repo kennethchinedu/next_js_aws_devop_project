@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
 import path, { dirname } from "path";
+import { createRouteHandler } from "uploadthing/express";
+import { uploadRouter } from "../lib/uploadthing";
 import errorHandler from "../middleware/errors";
 import imageRouter from "../routes/image";
 import recipe from "../routes/recipe";
@@ -20,6 +22,15 @@ export default function createServer() {
   //ROUTES
   app.use(`${basePathV1}/recipes`, recipe);
   app.use(`/image`, imageRouter);
+  app.use(
+    "/api/uploadthing",
+    createRouteHandler({
+      router: uploadRouter,
+      config: {
+        callbackUrl: "https://a310-197-211-59-54.ngrok-free.app/",
+      },
+    })
+  );
   app.use((res, req, next) => {
     const error = new ErrorResponse("Not Found", 404);
     next(error);

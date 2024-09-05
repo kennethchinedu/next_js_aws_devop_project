@@ -3,7 +3,7 @@ import DottedListings from "@/components/utils/DottedListings";
 import routes from "@/navigation/routes";
 import useAuthStore from "@/store/userStore";
 import { incomingData, recipeType } from "@/types/general";
-import { api, imageSrc } from "@/utilities";
+import { api } from "@/utilities";
 import { appToast } from "@/utilities/appToast";
 import { appAxios } from "@/utilities/httConfig";
 import { Button } from "@mui/material";
@@ -83,7 +83,7 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({}) => {
                 </div>
               )}
               <img
-                src={imageSrc(data.data.image)}
+                src={data.data.image}
                 className="h-[500px] w-full object-cover"
                 alt="recipe"
               />

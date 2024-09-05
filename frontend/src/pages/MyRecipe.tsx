@@ -3,7 +3,6 @@ import LoadingComponent from "@/components/loaders/LoadingComponent";
 import useFetchOnPageEnd from "@/hooks/scrollPaginate";
 import routes from "@/navigation/routes";
 import { RecipeList } from "@/types/general";
-import { imageSrc } from "@/utilities";
 import { appAxios } from "@/utilities/httConfig";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -33,7 +32,7 @@ const MyRecipe: React.FC<MyRecipeProps> = ({}) => {
 
   const cards = (data?.pages ?? []).map((page) => {
     return page.data.results.map((item) => {
-      return <RecipeCard key={item.id} {...item} src={imageSrc(item.image)} />;
+      return <RecipeCard key={item.id} {...item} src={item.image} />;
     });
   });
 

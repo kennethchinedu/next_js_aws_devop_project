@@ -44,18 +44,18 @@ const IngredientFields: React.FC<IngredientFieldsProps> = ({
   };
   return (
     <div>
+      <div className="py-2 text-sm font-bold">Add Ingredient</div>
       <div className="flex items-center gap-2 py-2">
-        <div>Add Ingredient</div>
         <TextField
           color="success"
           inputRef={nameRef}
-          label={"name"}
+          label={"ingredient"}
           name="name"
         />
         <TextField
           color="success"
           inputRef={amountRef}
-          label={"amount"}
+          label={"amount/quantity"}
           name="amount"
         />
         <Button

@@ -6,7 +6,7 @@ import { uploadRouter } from "../lib/uploadthing";
 import errorHandler from "../middleware/errors";
 import imageRouter from "../routes/image";
 import recipe from "../routes/recipe";
-import { ErrorResponse } from "../utils/errorResponse";
+import { ErrorResponse } from "./errorResponse";
 
 export default function createServer() {
   const basePathV1 = "/api/v1";

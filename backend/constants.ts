@@ -16,7 +16,6 @@ export const HTTP_STATUS_CODE = {
   },
   204: {
     code: 204,
-    name: "No Content",
     meaning:
       "The server successfully processed the request and is not returning any content.",
   },

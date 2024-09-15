@@ -18,7 +18,8 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
-     # Backend Build
+      
+      # Set environment variables
       - name: 'Set up environment variables'
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
@@ -26,6 +27,8 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          cp .env ./backend/.env
+      
       # Backend Build
       - name: 'Install Backend Dependencies'
         working-directory: ./backend

@@ -11,6 +11,7 @@ jobs:
   test:
     name: 'Run Frontend and Backend Tests'
     runs-on: ubuntu-latest
+    environment: staging
     defaults:
       run:
         shell: bash  # Properly indented here

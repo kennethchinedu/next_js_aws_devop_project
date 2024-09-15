@@ -1,0 +1,44 @@
+name: Dev continous integration workflow 
+
+# This workflow is triggered whenever a new PR is created on the dev branch
+on:
+    pull_request:
+      branches:
+        - dev
+    
+jobs:
+
+    # Building the project to make sure everything is ok
+    test:
+        name: 'Run Frontend and Backend Tests'
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            shell: bash
+      
+        steps:
+        - name: 'Checkout repository'
+          uses: actions/checkout@v2
+      
+        # Backend  Build
+        - name: 'Install Backend Dependencies'
+          working-directory: ./backend
+          run: npm install 
+      
+        - name: 'Run Data Migration'
+        working-directory: ./backend
+        run: npx prisma migrate dev 
+        
+        - name: 'Start Backend Server'
+        working-directory: ./backend
+        run: npm run dev
+      
+        # Frontend Build
+        - name: 'Install Frontend Dependencies'
+          working-directory: ./frontend 
+          run: npm install
+      
+        - name: 'Start Frontend Server'
+          working-directory: ./frontend 
+          run: npm run dev
+      

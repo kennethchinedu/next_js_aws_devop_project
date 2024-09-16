@@ -1,13 +1,16 @@
 name: Post_ci
 
 on:
-  pull_request:
+  push:
     branches:
-      - main  
-  workflow_run:
-    workflows: ["Dev_ci"] # Must match the name of the first workflow
-    types:
-      - completed   # This triggers when the first workflow is completed
+      - dev
+  # pull_request:
+  #   branches:
+  #     - main  
+  # workflow_run:
+  #   workflows: ["Dev_ci"] # Must match the name of the first workflow
+  #   types:
+  #     - completed   # This triggers when the first workflow is completed
 
 jobs:
   post_ci:
@@ -51,7 +54,7 @@ jobs:
       - name: 'Docker build image'
         run: make image
 
-      - name: 'Docker build image'
+      - name: 'Docker list image'
         run: make ps
 
       - name: 'Push to container registry'

@@ -27,7 +27,7 @@ push: #Push frontend and backend container images to registry
 	docker tag next_js_aws_devop_project_frontend anamskenneth/$(FRONTEND_IMAGE):$(IMAGE_TAG)
 	docker push anamskenneth/$(FRONTEND_IMAGE):$(IMAGE_TAG)
 	
-	docker tag next_js_aws_devop_project_backendd anamskenneth/$(BACKEND_IMAGE):$(IMAGE_TAG)
+	docker tag next_js_aws_devop_project_backend anamskenneth/$(BACKEND_IMAGE):$(IMAGE_TAG)
 	docker push anamskenneth/$(BACKEND_IMAGE):$(IMAGE_TAG)
 
 

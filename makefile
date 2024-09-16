@@ -1,7 +1,8 @@
 # Used by `image`, `push` & `deploy` targets, override as required
 IMAGE_REG ?= docker.io
 IMAGE_REPO ?= anamskenneth
-IMAGE_TAG ?= latest
+DATE_TAG := $(shell date +'%d-%m-%Y.%H%M')
+IMAGE_TAG ?= $(DATE_TAG)
 FRONTEND_IMAGE := $(IMAGE_REG)/$(IMAGE_REPO)/recipe-frontend
 BACKEND_IMAGE := $(IMAGE_REG)/$(IMAGE_REPO)/recipe-backend
 

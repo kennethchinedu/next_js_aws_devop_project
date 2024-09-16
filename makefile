@@ -1,10 +1,10 @@
 # Used by `image`, `push` & `deploy` targets, override as required
 IMAGE_REG ?= docker.io
 IMAGE_REPO ?= anamskenneth
-DATE_TAG := $(shell date +'%d-%m-%Y.%H%M')
+DATE_TAG := latest
 IMAGE_TAG ?= $(DATE_TAG)
-FRONTEND_IMAGE := $(IMAGE_REG)/$(IMAGE_REPO)/recipe-frontend
-BACKEND_IMAGE := $(IMAGE_REG)/$(IMAGE_REPO)/recipe-backend
+FRONTEND_IMAGE := next_js_aws_devop_project_frontend
+BACKEND_IMAGE := next_js_aws_devop_project_backend
 
 
 
@@ -25,10 +25,10 @@ ps: #Build frontend and backend container images using docker-compose
 	docker images
 
 push: #Push frontend and backend container images to registry
-	docker tag recipe_webapp_project-frontend $(FRONTEND_IMAGE):$(IMAGE_TAG)
+	docker tag next_js_aws_devop_project_frontend $(FRONTEND_IMAGE):$(IMAGE_TAG)
 	docker push $(FRONTEND_IMAGE):$(IMAGE_TAG)
 	
-	docker tag recipe_webapp_project-backend $(BACKEND_IMAGE):$(IMAGE_TAG)
+	docker tag next_js_aws_devop_project_backendd $(BACKEND_IMAGE):$(IMAGE_TAG)
 	docker push $(BACKEND_IMAGE):$(IMAGE_TAG)
 
 

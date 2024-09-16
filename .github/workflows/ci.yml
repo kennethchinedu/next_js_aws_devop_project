@@ -1,4 +1,4 @@
-name: Dev Continuous Integration Workflow 
+name: Dev_ci
 
 # This workflow is triggered whenever a new PR is created on the dev branch
 on:

@@ -1,6 +1,9 @@
 name: Post_ci
 
 on:
+  pull_request:
+    branches:
+      - main  
   workflow_run:
     workflows: ["Dev_ci"] # Must match the name of the first workflow
     types:
@@ -49,5 +52,5 @@ jobs:
         run: make image
 
       - name: 'Push to container registry'
-        if: github.ref == 'refs/heads/main' && github.event_name == 'pull_request'
+        if: github.ref == 'refs/heads/main' 
         run: make push

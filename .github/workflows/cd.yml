@@ -1,11 +1,13 @@
-name: Dev_ci
+name: Cd_ci
 
 # This workflow is triggered whenever a new PR is created on the dev branch
 on:
   pull_request:
     branches:
-      - dev 
-
+      - main
+  push:
+    branches:
+      - main
 
     
 jobs:

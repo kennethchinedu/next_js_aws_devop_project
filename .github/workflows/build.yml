@@ -51,5 +51,8 @@ jobs:
       - name: 'Docker build image'
         run: make image
 
+      - name: 'Docker build image'
+        run: make ps
+
       - name: 'Push to container registry'
         run: make push

@@ -1,7 +1,7 @@
 # Used by `image`, `push` & `deploy` targets, override as required
 IMAGE_REG ?= docker.io
 IMAGE_REPO ?= anamskenneth
-DATE_TAG := latest
+DATE_TAG := $(date +%d-%m-%Y.%H%M)
 IMAGE_TAG ?= $(DATE_TAG)
 FRONTEND_IMAGE := next_js_aws_devop_project_frontend
 BACKEND_IMAGE := next_js_aws_devop_project_backend

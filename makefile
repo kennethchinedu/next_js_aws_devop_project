@@ -20,10 +20,10 @@ image: #Build frontend and backend container images using docker-compose
 
 
 push: #Push frontend and backend container images to registry
-	docker tag frontend $(FRONTEND_IMAGE):$(IMAGE_TAG)
+	docker tag recipe_webapp_project-frontend $(FRONTEND_IMAGE):$(IMAGE_TAG)
 	docker push $(FRONTEND_IMAGE):$(IMAGE_TAG)
 	
-	docker tag backend $(BACKEND_IMAGE):$(IMAGE_TAG)
+	docker tag recipe_webapp_project-backend $(BACKEND_IMAGE):$(IMAGE_TAG)
 	docker push $(BACKEND_IMAGE):$(IMAGE_TAG)
 
 

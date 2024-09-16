@@ -91,6 +91,7 @@ jobs:
     name: 'Delete Merged Branch'
     needs: auto_merge_to_dev  # Run this after the merge is successful
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
       - name: 'Delete branch'

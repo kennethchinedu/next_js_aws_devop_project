@@ -52,5 +52,4 @@ jobs:
         run: make image
 
       - name: 'Push to container registry'
-        if: github.ref == 'refs/heads/main' 
         run: make push

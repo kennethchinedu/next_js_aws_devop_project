@@ -79,7 +79,7 @@ jobs:
         run: git checkout dev
 
       - name: 'Merge PR branch into dev'
-        run: git merge ${{ github.head_ref }} --no-ff
+        run: git merge ${{ github.head_ref }} --no-ff --allow-unrelated-histories
 
       - name: 'Push changes to dev'
         run: git push origin dev

@@ -1,7 +1,7 @@
 # Used by `image`, `push` & `deploy` targets, override as required
 IMAGE_REG ?= docker.io
-IMAGE_REPO ?= anamskenneth
-IMAGE_TAG ?= latest
+IMAGE_DIRECTORY ?= anamskenneth
+IMAGE_TAG ?= $(date +%d-%m-%Y.%H%M)
 FRONTEND_IMAGE := next_js_aws_devop_project_frontend
 BACKEND_IMAGE := next_js_aws_devop_project_backend
 
@@ -24,11 +24,11 @@ ps: #Build frontend and backend container images using docker-compose
 	docker images
 
 push: #Push frontend and backend container images to registry
-	docker tag next_js_aws_devop_project_frontend anamskenneth/$(FRONTEND_IMAGE):$(IMAGE_TAG)
-	docker push anamskenneth/$(FRONTEND_IMAGE):$(IMAGE_TAG)
+	docker tag next_js_aws_devop_project_frontend $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$(IMAGE_TAG)
+	docker push $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$(IMAGE_TAG)
 	
-	docker tag next_js_aws_devop_project_backend anamskenneth/$(BACKEND_IMAGE):$(IMAGE_TAG)
-	docker push anamskenneth/$(BACKEND_IMAGE):$(IMAGE_TAG)
+	docker tag next_js_aws_devop_project_backend $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$(IMAGE_TAG)
+	docker push $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$(IMAGE_TAG)
 
 
 up: ## ⬆️  Bring up the services locally with docker-compose

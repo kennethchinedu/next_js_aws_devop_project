@@ -53,3 +53,51 @@ jobs:
       - name: 'Build Frontend Server'
         working-directory: ./frontend 
         run: npm run build
+
+  # Auto-merge the PR branch into dev after successful tests
+  auto_merge_to_dev:
+    name: 'Auto Merge PR branch into Dev'
+    needs: test  # Run this after the test job passes
+    runs-on: ubuntu-latest 
+    environment: staging
+
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}  
+
+      - name: 'Set up Git'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: 'Fetch all branches'
+        run: git fetch --all
+
+      - name: 'Checkout dev branch'
+        run: git checkout dev
+
+      - name: 'Merge PR branch into dev'
+        run: git merge ${{ github.head_ref }} --no-ff
+
+      - name: 'Push changes to dev'
+        run: git push origin dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
+  
+  # Delete branch after successful merge
+  delete_branch:
+    name: 'Delete Merged Branch'
+    needs: auto_merge_to_dev  # Run this after the merge is successful
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Delete branch'
+        run: |
+          BRANCH_NAME=${{ github.head_ref }}
+          if [ "$BRANCH_NAME" != "dev" ]; then
+            git push origin --delete $BRANCH_NAME
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}

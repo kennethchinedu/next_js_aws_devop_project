@@ -36,10 +36,6 @@ down: ## ⬇️  Stop the services and remove containers
 
 
 
-
-
-
-
 # push:  ## 📤 Push container image to registry 
 # 	docker push $(IMAGE_REG)/$(IMAGE_REPO):$(IMAGE_TAG)
 

@@ -5,9 +5,11 @@ on:
   pull_request:
     branches:
       - dev 
+      - main
   push:
     branches:
       - dev
+      - main
     
 jobs:
   # Building the project to make sure everything is ok
@@ -42,7 +44,7 @@ jobs:
         working-directory: ./backend
         run: npx prisma migrate dev 
         
-      - name: 'Start Backend Server'
+      - name: 'Build Backend Server'
         working-directory: ./backend
         run: npm run build
         
@@ -51,6 +53,6 @@ jobs:
         working-directory: ./frontend 
         run: npm install
         
-      - name: 'Start Frontend Server'
+      - name: 'Build Frontend Server'
         working-directory: ./frontend 
         run: npm run build

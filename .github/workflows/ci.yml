@@ -4,13 +4,19 @@ name: Dev Continuous Integration Workflow
 on:
   pull_request:
     branches:
+      - dev 
+      - main
+  push:
+    branches:
       - dev
+      - main
     
 jobs:
   # Building the project to make sure everything is ok
   test:
     name: 'Run Frontend and Backend Tests'
     runs-on: ubuntu-latest
+    environment: staging
     defaults:
       run:
         shell: bash  # Properly indented here
@@ -38,15 +44,15 @@ jobs:
         working-directory: ./backend
         run: npx prisma migrate dev 
         
-      - name: 'Start Backend Server'
+      - name: 'Build Backend Server'
         working-directory: ./backend
-        run: npm run dev
+        run: npm run build
         
       # Frontend Build
       - name: 'Install Frontend Dependencies'
         working-directory: ./frontend 
         run: npm install
         
-      - name: 'Start Frontend Server'
+      - name: 'Build Frontend Server'
         working-directory: ./frontend 
-        run: npm run dev
+        run: npm run build

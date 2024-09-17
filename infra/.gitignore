@@ -6,3 +6,4 @@ terraform.tfstate.backup
 module/server/variables.tf 
 deployer_key 
 deployer_key.pub
+variables.tf

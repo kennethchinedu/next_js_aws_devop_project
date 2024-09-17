@@ -1,0 +1,85 @@
+name: Deploy_app
+
+on:
+   workflow_run:
+     workflows: ["Cd_build"] 
+     types:
+       - completed  
+
+jobs:
+  terraform:
+    name: 'Terraform setup'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Set up Terraform'
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.11
+
+      # Initializing terraform
+      - name: 'Terraform Init'
+        run: terraform init -lock=false
+        working-directory: ./infra 
+
+      # Terraform Plan
+      - name: 'Terraform Plan'
+        run: terraform plan
+        working-directory: ./infra
+
+      # Terraform Apply
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve
+        working-directory: ./infra
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1' 
+          
+      - name: 'Capture Terraform Outputs'
+        id: terraform_outputs
+        run: |
+          echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
+          echo "EC2_PRIVATE_KEY=$(terraform output -raw ec2_private_key)" >> $GITHUB_ENV
+        working-directory: ./infra
+  
+
+#   ssh_into_ec2:
+#     name: 'SSH into EC2 and Run Docker'
+#     needs: terraform
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: 'Checkout repository'
+#         uses: actions/checkout@v2
+
+#       # SSH into the EC2 instance
+#       - name: 'SSH into EC2 and Pull Docker Image'
+#         run: |
+#           echo "${{ secrets.EC2_PRIVATE_KEY }}" > private_key.pem
+#           chmod 600 private_key.pem
+          
+#           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} << EOF
+#             # Update EC2 instance
+#             sudo apt-get update -y
+#             sudo apt-get install -y docker.io
+
+#             # Pull Docker image
+#             docker pull your-docker-repo/your-image:latest
+
+#             # Run Docker container
+#             docker run -d -p 80:80 your-docker-repo/your-image:latest
+
+#             # Additional commands to run if needed
+#           EOF
+#         env:
+#           EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # Public IP of the EC2 instance
+#           EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}  # SSH private key stored in GitHub secrets
+
+#       # Verify Docker container is running
+#       - name: 'Verify Docker Container'
+#         run: |
+#           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} "docker ps"

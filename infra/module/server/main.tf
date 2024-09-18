@@ -78,10 +78,10 @@ resource "aws_route_table_association" "rt_association2" {
 
 # Creating security group with multiple ingress rules
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  public_key = file(var.key_path)
-}
+# resource "aws_key_pair" "deployer" {
+#   key_name   = "deployer-key"
+#   public_key = file(var.key_path)
+# }
 
 
 resource "aws_security_group" "sg" {

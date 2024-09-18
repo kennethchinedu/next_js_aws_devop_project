@@ -1,6 +1,39 @@
 provider "aws" {
   region = "us-east-1"
 }
+####### VARIABLES  ###########
+
+variable "region_main" {
+  # default = "us-east-1"
+}
+
+variable "cidr" {
+  # default = "172.16.0.0/16"
+}
+
+variable "availability_zone_a" {
+  # default = "us-east-1a" 
+}
+
+variable "availability_zone_b" {
+  # default = "us-east-1b" 
+}
+
+variable "ami" {
+  #  description = "ami-0a0e5d9c7acc336f1"
+}
+
+variable "instance_type" {
+  # default = "t2.micro"
+}
+
+
+
+
+
+
+
+
 
 #creating vpc
 resource "aws_vpc" "myvpc" {

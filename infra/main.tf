@@ -4,6 +4,10 @@ provider "aws" {
 
 module "app-deployment" {
   source        = "./module/server"
-  # ami           = "ami-0a0e5d9c7acc336f1"
-  # instance_type = "t2.micro"
+  region_main         = var.region_main
+  cidr                = var.cidr
+  availability_zone_a = var.availability_zone_a
+  availability_zone_b = var.availability_zone_b
+  ami                 = var.ami
+  instance_type       = var.instance_type
 }

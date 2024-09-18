@@ -9,13 +9,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: 'us-east-1'
-  # region_main: 'us-east-1'
-  # cidr: '172.16.0.0/16'
-  # VAR_availability_zone_a: 'us-east-1a'
-  # VAR_availability_zone_b: 'us-east-1b'
-  # VAR_ami: 'ami-0a0e5d9c7acc336f1'
-  # TF_VAR_instance_type: 't2.micro'
-  # TF_VAR_key_path: '/path/to/your/key.pub'
+
 jobs:
   terraform:
     name: 'Terraform setup'

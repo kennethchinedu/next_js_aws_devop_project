@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 module "app-deployment" {
-  source        = "./module/server"
+  source        = "./module/server/main.tf"
   ami           = var.ami
   instance_type = var.instance_type
   cidr          = var.cidr

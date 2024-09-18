@@ -16,7 +16,6 @@ resource "aws_s3_bucket" "mybucket" {
   }
 }
 
-<<<<<<< HEAD
 # resource "aws_dynamodb_table" "lockfile" {
 #   name         = "lock_files"
 #   billing_mode = "PAY_PER_REQUEST"
@@ -27,15 +26,3 @@ resource "aws_s3_bucket" "mybucket" {
 #     type = "S"
 #   }
 # }
-=======
-#resource "aws_dynamodb_table" "lockfile" {
-# name         = "lock_files"
-# billing_mode = "PAY_PER_REQUEST"
-#  hash_key     = "LockID"
-#
-#  attribute {
-#    name = "LockID"
-#    type = "S"
-#  }
-#}
->>>>>>> 1c405b4c6bf253f245da7e960c21fa66e6df5453

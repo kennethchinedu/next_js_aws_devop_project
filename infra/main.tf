@@ -13,10 +13,11 @@ module "app-deployment" {
 }
 
 
+# Use module outputs instead of direct resource references
 output "ec2_public_ip" {
-  value = aws_instance.server1.public_ip
+  value = module.app-deployment.ec2_public_ip
 }
 
-output "ec2_private_key" {
-  value = aws_instance.server1.private_ip
+output "ec2_private_ip" {
+  value = module.app-deployment.ec2_private_ip
 }

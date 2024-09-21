@@ -112,7 +112,7 @@ jobs:
              AWS_DEFAULT_REGION: 'us-east-1'
         #ssh
         run: |
-          echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key
+          echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME}
 
         # run: |
@@ -125,7 +125,7 @@ jobs:
           # Place your SSH commands here
           echo "Connected to EC2"
           EOF
-          
+
 
            
   # ssh_into_ec2:

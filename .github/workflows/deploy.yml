@@ -125,6 +125,7 @@ jobs:
           # Place your SSH commands here
           echo "Connected to EC2"
           EOF
+          
 
            
   # ssh_into_ec2:

@@ -90,10 +90,17 @@ jobs:
           USER_NAME: ${{ secrets.USER }}
         
         run: |
+
           # Save the private key to a file and give it proper permissions
           echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
-  
+
+          # Check if the key file is properly created and has the correct permissions
+          ls -l private_key.pem
+
+          # Verify SSH connectivity (dry run)
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} "echo SSH Connection Successful"
+
           # Use the private key to SSH into the EC2 instance
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} << EOF
           # Place your commands to run on the EC2 instance here

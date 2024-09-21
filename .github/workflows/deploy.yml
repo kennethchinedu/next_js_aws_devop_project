@@ -75,19 +75,7 @@ jobs:
           echo "Public IP: $EC2_PUBLIC_IP"
           echo "Load Balancer DNS: $LOAD_BALANCER"
 
-      # - name: Capture Terraform Outputs
-      #   run: |
-      #     EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
-      #     SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key 2>/dev/null || echo "")
-      #     LOAD_BALANCER=$(terraform output -raw dns_name 2>/dev/null || echo "")
-      #     USER=$(terraform output -raw user_name 2>/dev/null || echo "")
-
-      #     echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
-      #     echo "SSH_PRIVATE_KEY<<EOF" >> $GITHUB_ENV
-      #     echo "$SSH_PRIVATE_KEY" >> $GITHUB_ENV
-      #     echo "EOF" >> $GITHUB_ENV
-      #     echo "public ip $EC2_PUBLIC_IP"
-      #     echo "load_balance dns $LOAD_BALANCER"
+      # echo "load_balance dns $LOAD_BALANCER"
         working-directory: ./infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

@@ -119,23 +119,18 @@ jobs:
                 PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
                 HOSTNAME: ${{ secrets.EC2_PUBLIC_IP }}
                 USER_NAME: ${{ secrets.USER }}
-              
+          
               run: |
-                # Save the private key to a file and ensure it's properly formatted
-                echo "$PRIVATE_KEY" | sed 's/\\n/\
-             /g' > private_key.pem
-                
-                # Ensure the private key file permissions are secure
-                chmod 600 private_key.pem
+                 # Save the private key to a file and give it proper permissions
+                 echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
+                 chmod 600 private_key.pem
           
-                # Check if the private key was copied correctly
-                ls -l private_key.pem
-                cat private_key.pem
+                 # Check if the key file is properly created and has the correct permissions
+                 ls -l private_key.pem
           
-                # Use the private key to SSH into the EC2 instance
-                ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} "echo SSH Connection Successful && <your-commands-here>"
-            
-  
+                 # Verify SSH connectivity and run commands directly
+                ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} "echo SSH Connection Successful"
+
   # ssh_into_ec2:
   #   name: 'SSH into EC2 and Run Docker'
   #   needs: terraform

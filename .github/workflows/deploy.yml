@@ -121,7 +121,7 @@ jobs:
 
       - name: SSH into EC2 instance and run commands
         run: |
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} << EOF
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER}@${EC2_PUBLIC_IP} << EOF
           # Place your SSH commands here
           echo "Connected to EC2"
           EOF

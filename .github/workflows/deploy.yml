@@ -1,31 +1,30 @@
 name: Deploy_app
 
 on:
-  workflow_run:
-    workflows: ["Cd_build"]
-    types:
-      - completed
+   workflow_run:
+     workflows: ["Cd_build"] 
+     types:
+       - completed  
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-east-1'
 
 jobs:
-  deploy_to_staging:
-    name: Deploy to Staging
+  terraform:
+    name: 'Terraform setup'
     runs-on: ubuntu-latest
     environment: staging
 
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
-      
 
       - name: 'Set up Terraform'
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
           terraform_version: 1.0.11
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'
 
       # Initializing terraform
       - name: 'Terraform Init'
@@ -98,7 +97,8 @@ jobs:
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
-    needs: deploy_to_staging
+    needs: terraform
+    environment: staging
 
     steps:
       - name: Setup SSH

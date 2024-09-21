@@ -19,7 +19,7 @@ output "ssh_private_key" {
 
 output "user_name" {
   description = "The username for SSH access"
-  value       = "ec2-user"  
+  value       = "ubuntu"  
 }
 
 

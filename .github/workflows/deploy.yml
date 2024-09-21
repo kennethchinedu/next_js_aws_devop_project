@@ -94,43 +94,22 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-1'
 
-
-
-
-  Deploy:
-    name: Deploy to EC2
-    needs: terraform
+  deploy:
+    name: Deploy to Server
     runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2 
-  
-      - name: Deploy to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOSTNAME: ${{ secrets.EC2_PUBLIC_IP }}
-          USER_NAME: ${{ secrets.USER }}
-        
-          steps:
-            - uses: actions/checkout@v2 
-          
-            - name: Deploy to EC2
-              env:
-                PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-                HOSTNAME: ${{ secrets.EC2_PUBLIC_IP }}
-                USER_NAME: ${{ secrets.USER }}
-          
-              run: |
-                 # Save the private key to a file and give it proper permissions
-                 echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
-                 chmod 600 private_key.pem
-          
-                 # Check if the key file is properly created and has the correct permissions
-                 ls -l private_key.pem
-          
-                 # Verify SSH connectivity and run commands directly
-                ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} "echo SSH Connection Successful"
+    needs: terraform
 
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: SSH into Server and Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.EC2_PUBLIC_IP }} \
+
+           
   # ssh_into_ec2:
   #   name: 'SSH into EC2 and Run Docker'
   #   needs: terraform

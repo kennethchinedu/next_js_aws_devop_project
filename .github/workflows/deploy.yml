@@ -49,52 +49,21 @@ jobs:
           terraform output ec2_public_ip
           terraform output ec2_private_ip
         working-directory: ./infra
-        
           
-      # - name: Capture Terraform Outputs
-      #   id: terraform_outputs
-      #   run: |
-      #     echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> .env
-      #     echo "EC2_PRIVATE_IP=$(terraform output -raw ec2_private_ip)" >> .env
-      #     cat .env
-      #   working-directory: ./infra 
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: 'us-east-1' 
-
       - name: Capture Terraform Outputs
+        id: terraform_outputs
         run: |
-          # Capture and sanitize the Terraform output for EC2 public IP and private ip
-          EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' || echo "")
-          EC2_PRIVATE_KEY=$(terraform output -raw ec2_private_ip 2>/dev/null || echo "")
-
-          # Validate EC2 public IP and ensure it's properly formatted
-          if [[ -n "$EC2_PUBLIC_IP" ]]; then
-            echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
-          else
-            echo "EC2_PUBLIC_IP not available or invalid"
-          fi
-
-          # Validate EC2 private key and ensure it's properly sanitized
-          if [[ -n "$EC2_PRIVATE_KEY" ]]; then
-            # Escape special characters in private key
-            echo "EC2_PRIVATE_KEY=$(echo "$EC2_PRIVATE_KEY" | sed ':a;N;$!ba;s/\n/\\n/g')" >> $GITHUB_ENV
-          else
-            echo "EC2_PRIVATE_KEY not available"
-          fi
-        shell: bash
-        working-directory: ./infra
+          echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> .env
+          echo "EC2_PRIVATE_IP=$(terraform output -raw ec2_private_ip)" >> .env
+          cat .env
+        working-directory: ./infra 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'
+          AWS_DEFAULT_REGION: 'us-east-1' 
 
-        
+      
   
-
-  
-
 #   ssh_into_ec2:
 #     name: 'SSH into EC2 and Run Docker'
 #     needs: terraform

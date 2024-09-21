@@ -50,19 +50,32 @@ jobs:
           terraform output ec2_private_ip
         working-directory: ./infra
           
+      # - name: Capture Terraform Outputs
+      #   id: terraform_outputs
+      #   run: |
+      #     echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> .env
+      #     echo "EC2_PRIVATE_IP=$(terraform output -raw ec2_private_ip)" >> .env
+      #     cat .env
+      #   working-directory: ./infra 
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: 'us-east-1' 
+
       - name: Capture Terraform Outputs
-        id: terraform_outputs
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false 
         run: |
-          echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> .env
-          echo "EC2_PRIVATE_IP=$(terraform output -raw ec2_private_ip)" >> .env
-          cat .env
-        working-directory: ./infra 
+          # Capture Terraform outputs
+          EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
+          EC2_PRIVATE_KEY=$(terraform output -raw ec2_private_ip 2>/dev/null || echo "")
+        working-directory: ./infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1' 
+          AWS_DEFAULT_REGION: 'us-east-1'
 
-      
   
 #   ssh_into_ec2:
 #     name: 'SSH into EC2 and Run Docker'

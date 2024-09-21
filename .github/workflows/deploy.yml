@@ -23,6 +23,7 @@ jobs:
       - name: 'Set up Terraform'
         uses: hashicorp/setup-terraform@v1
         with:
+          terraform_wrapper: false
           terraform_version: 1.0.11
 
       # Initializing terraform
@@ -50,31 +51,20 @@ jobs:
           terraform output ec2_private_ip
         working-directory: ./infra
           
-      # - name: Capture Terraform Outputs
-      #   id: terraform_outputs
-      #   run: |
-      #     echo "EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)" >> .env
-      #     echo "EC2_PRIVATE_IP=$(terraform output -raw ec2_private_ip)" >> .env
-      #     cat .env
-      #   working-directory: ./infra 
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: 'us-east-1' 
-
       - name: Capture Terraform Outputs
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_wrapper: false 
         run: |
-          # Capture Terraform outputs
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
           EC2_PRIVATE_KEY=$(terraform output -raw ec2_private_ip 2>/dev/null || echo "")
+
+          # Append outputs to GitHub environment
+          echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
+          echo "EC2_PRIVATE_KEY=$EC2_PRIVATE_KEY" >> $GITHUB_ENV
         working-directory: ./infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-1'
+
 
   
 #   ssh_into_ec2:

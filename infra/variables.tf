@@ -1,30 +1,30 @@
 
 variable "region_main" {
-  type        = string
+  type = string
   # default = "us-east-1"
 }
 
 variable "cidr" {
-  type        = string
+  type = string
   # default = "172.16.0.0/16"
 }
 
 variable "availability_zone_a" {
-  type        = string
+  type = string
   # default = "us-east-1a" 
 }
 
 variable "availability_zone_b" {
-  type        = string
+  type = string
   # default = "us-east-1b" 
 }
 
 variable "ami" {
-  type        = string
+  type = string
   #  description = "ami-0a0e5d9c7acc336f1"
 }
 
 variable "instance_type" {
-  type        = string
+  type = string
   # default = "t2.micro"
 }

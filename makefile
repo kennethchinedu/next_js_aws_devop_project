@@ -30,6 +30,18 @@ push: # Push frontend and backend container images to registry
 	docker tag next_js_aws_devop_project_backend $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG && \
 	docker push $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG
 
+
+pull: # Push frontend and backend container images to registry
+	# Generate a timestamp for the image tag
+	docker pull $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$$IMAGE_TAG && \
+	docker pull $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG
+
+run:
+	docker run -d --name backend-app $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG \
+	docker run -d -p 5137:5137 --name frontend-app $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$$IMAGE_TAG
+	
+
+
 up: ## ⬆️  Bring up the services locally with docker-compose
 	docker-compose up -d
 

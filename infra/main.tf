@@ -21,3 +21,8 @@ output "ec2_public_ip" {
 output "ec2_private_ip" {
   value = module.app-deployment.ec2_private_ip
 }
+
+output "dns_name" {
+  description = "The DNS name of the load balancer"
+  value       = module.app-deployment.dns_name
+}

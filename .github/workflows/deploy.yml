@@ -59,6 +59,8 @@ jobs:
           # Append outputs to GitHub environment
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
           echo "EC2_PRIVATE_KEY=$EC2_PRIVATE_KEY" >> $GITHUB_ENV
+          echo "public ip $EC2_PUBLIC_IP"
+          echo "public ip $EC2_PRIVATE_KEY"
         working-directory: ./infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

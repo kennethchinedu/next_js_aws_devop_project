@@ -60,9 +60,10 @@ jobs:
           LOAD_BALANCER=$(terraform output -raw dns_name 2>/dev/null || echo "")
           USER=$(terraform output -raw user_name 2>/dev/null || echo "")
 
-          # Append outputs to GitHub environment
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
-          echo "SSH_PRIVATE_KEY=$SSH_PRIVATE_KEY" >> $GITHUB_ENV
+          echo "SSH_PRIVATE_KEY<<EOF" >> $GITHUB_ENV
+          echo "$SSH_PRIVATE_KEY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
           echo "public ip $EC2_PUBLIC_IP"
           echo "load_balance dns $LOAD_BALANCER"
         working-directory: ./infra
@@ -81,17 +82,23 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2 
-      - name: Deploy
+  
+      - name: Deploy to EC2
         env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.EC2_PUBLIC_IP}}
-            USER_NAME: ${{secrets.USER}}
-      
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOSTNAME: ${{ secrets.EC2_PUBLIC_IP }}
+          USER_NAME: ${{ secrets.USER }}
+        
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-
-          echo "# Now we have got the access of EC2 and we will start the deploy"     
+          # Save the private key to a file and give it proper permissions
+          echo "$PRIVATE_KEY" | tr -d '\r' > private_key.pem
+          chmod 600 private_key.pem
+  
+          # Use the private key to SSH into the EC2 instance
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} << EOF
+          # Place your commands to run on the EC2 instance here
+          EOF
+             
   
   # ssh_into_ec2:
   #   name: 'SSH into EC2 and Run Docker'

@@ -48,7 +48,9 @@ jobs:
       - name: Inspect Terraform Output
         run: |
           terraform output ec2_public_ip
-          terraform output ec2_private_ip
+          terraform output ssh_private_key
+          terraform output user_name
+          terraform output dns_name
         working-directory: ./infra
           
       - name: Capture Terraform Outputs

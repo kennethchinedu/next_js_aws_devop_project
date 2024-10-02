@@ -95,7 +95,7 @@ jobs:
         name: SSH into EC2 instance and run commands
         with:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          REMOTE_HOST: ${{ vars.HOST }}
+          REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USER }}
       
 

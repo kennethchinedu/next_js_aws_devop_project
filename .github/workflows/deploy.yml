@@ -66,7 +66,8 @@ jobs:
           eval $(ssh-agent -s)
           cat $private_key >> key.pem
           chmod 600 key.pem
-          ssh -v -i key.pem -o ${{secrets.USER}}@${{ env.EC2_PUBLIC_IP }}
+          ssh -i key.pem -o  ubuntu@${{ env.EC2_PUBLIC_IP }}
+
 
 
 

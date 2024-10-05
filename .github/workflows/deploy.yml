@@ -64,9 +64,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y openssh-client
           eval $(ssh-agent -s)
-          cat $private_key >> key.pem
+          # cat $private_key >> key.pem
           chmod 600 key.pem
-          ssh -i key.pem -o  ubuntu@${{ env.EC2_PUBLIC_IP }}
+          ssh -i private_key.pem -o  ubuntu@${{ env.EC2_PUBLIC_IP }}
 
 
 

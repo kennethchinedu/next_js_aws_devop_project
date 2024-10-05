@@ -54,7 +54,7 @@ jobs:
           echo "USER=$USER" >> $GITHUB_ENV
 
           # Format the SSH private key correctly and save to file
-          echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > private_key.pem
+          echo -e "$SSH_PRIVATE_KEY\n" | sed 's/\\n/\n/g' > private_key.pem
           chmod 600 private_key.pem
           
         working-directory: ./infra
@@ -77,7 +77,7 @@ jobs:
 
       - name: Add EC2 host to known hosts
         run: |
-          ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-west-1.compute.amazonaws.com
+          ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-east-1.compute.amazonaws.com
           echo "Hello world"
 
       #     ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts

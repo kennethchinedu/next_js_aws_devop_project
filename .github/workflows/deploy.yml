@@ -61,6 +61,8 @@ jobs:
 
       - name: Ssh into Ec2
         run: |
+          apt-get update -y
+          apt-get install -y openssh-client
           eval $(ssh-agent -s)
           cat $private_key >> key.pem
           chmod 600 key.pem

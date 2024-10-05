@@ -60,12 +60,12 @@ jobs:
         working-directory: ./infra
 
       - name: testing id_ed25519 key
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ env.REMOTE_HOST }}
-        username: ubuntu
-        key: private_key.pem
-        port: 22
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ubuntu
+          key: private_key.pem
+          port: 22
 
       # - name: Ssh into Ec2
       #   run: |

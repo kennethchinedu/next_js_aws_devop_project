@@ -53,7 +53,7 @@ jobs:
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
           echo "USER=$USER" >> $GITHUB_ENV
 
-          # Format the SSH private key and store it in an environment variable
+          # Format the SSH private key correctly and save to file
           echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > private_key.pem
           chmod 600 private_key.pem
           
@@ -69,40 +69,31 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Set up SSH agent and add private key'
-        run: |
-          # Install ssh-agent if it's not already installed
-          command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
-
-          # Start the ssh-agent
-          eval $(ssh-agent -s)
-
-          # Add the SSH private key
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-
-          # Set up the SSH config and known_hosts
-          mkdir -p ~/.ssh
-          touch ~/.ssh/config
-          touch ~/.ssh/known_hosts
-
-          # Make sure SSH config and known_hosts have the correct permissions
-          chmod -R 400 ~/.ssh
+      # Setup SSH using the key extracted dynamically from Terraform outputs
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: private_key.pem  # Use the dynamically generated key file
 
       - name: Add EC2 host to known hosts
         run: |
-          ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-        env:
-          EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
+          ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-west-1.compute.amazonaws.com
+          echo "Hello world"
 
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} << EOF
-            echo "Deploying application to EC2 instance..."
-            # Replace with your actual deployment commands
-            docker ps
-          EOF
-        env:
-          EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
+      #     ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
+      #   env:
+      #     EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
+
+      # - name: Deploy to EC2
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} << EOF
+      #       echo "Deploying application to EC2 instance..."
+      #       # Replace with your actual deployment commands
+      #       docker ps
+      #     EOF
+      #   env:
+      #     EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
+
         
   
 

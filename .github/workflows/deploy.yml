@@ -1,10 +1,10 @@
 name: Deploy_app
 
 on:
-   workflow_run:
-     workflows: ["Cd_build"]
-     types:
-       - completed  
+  workflow_run:
+    workflows: ["Cd_build"]
+    types:
+      - completed
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -27,17 +27,14 @@ jobs:
           terraform_wrapper: false
           terraform_version: 1.0.11
 
-      # Initializing terraform
       - name: 'Terraform Init'
         run: terraform init -lock=false
         working-directory: ./infra 
 
-      # Terraform Plan
       - name: 'Terraform Plan'
         run: terraform plan -var-file=terraform.tfvars -lock=false
         working-directory: ./infra
 
-      # Terraform Apply
       - name: 'Terraform Apply'
         run: terraform apply -auto-approve -var-file=terraform.tfvars -lock=false
         working-directory: ./infra
@@ -46,30 +43,20 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-1'
 
-      # Capture Terraform Outputs
+      # Capture the necessary Terraform Outputs
       - name: Capture Terraform Outputs
         id: capture_outputs
         run: |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
           SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key 2>/dev/null || echo "")
-          LOAD_BALANCER=$(terraform output -raw dns_name 2>/dev/null || echo "")
           USER=$(terraform output -raw user_name 2>/dev/null || echo "")
 
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
-          echo "LOAD_BALANCER=$LOAD_BALANCER" >> $GITHUB_ENV
           echo "USER=$USER" >> $GITHUB_ENV
-          echo "HOST=$EC2_PUBLIC_IP" >> $GITHUB_ENV
 
-          # Capture the SSH private key securely
-          echo "SSH_PRIVATE_KEY<<EOF" >> $GITHUB_ENV
-          echo "$SSH_PRIVATE_KEY" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-          # Optional: Debugging output
-          echo "Public IP: $EC2_PUBLIC_IP"
-          echo "Load Balancer DNS: $LOAD_BALANCER"
-          echo "SSH Key: $SSH_PRIVATE_KEY"
-          echo "User: $USER"
+          # Write the SSH private key to a file to use it in the next step
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
           
         working-directory: ./infra
 
@@ -83,11 +70,11 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      # Setup SSH using the key extracted dynamically from Terraform outputs
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.5.0
         with:
-          # Use the SSH private key captured from Terraform output
-          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+          ssh-private-key: private_key.pem  # Use the dynamically generated key file
 
       - name: Add EC2 host to known hosts
         run: |
@@ -99,18 +86,15 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} << EOF
             echo "Deploying application to EC2 instance..."
-            # Replace the following with your actual deployment commands
+            # Replace with your actual deployment commands
             docker ps
           EOF
         env:
           EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
 
 
+        
   
-    
-      
-
-
 
            
   # ssh_into_ec2:

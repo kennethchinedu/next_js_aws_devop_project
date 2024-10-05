@@ -59,19 +59,22 @@ jobs:
           echo "private key saved"
         working-directory: ./infra
 
-      - name: Ssh into Ec2
-        run: |
-          eval $(ssh-agent -s)
-          echo "$private_key.pem" > key.pem
-          cat key.pem
-          chmod 600 key.pem
-          ssh -vvv -i key.pem -o  StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} 
-          echo "Connected"
+      - name: testing id_ed25519 key
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ env.REMOTE_HOST }}
+        username: ubuntu
+        key: private_key.pem
+        port: 22
 
-
-
-
-
+      # - name: Ssh into Ec2
+      #   run: |
+      #     eval $(ssh-agent -s)
+      #     echo "$private_key.pem" > key.pem
+      #     cat key.pem
+      #     chmod 600 key.pem
+      #     ssh -vvv -i key.pem -o  StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} 
+      #     echo "Connected"
 
 
 #------------------
@@ -79,7 +82,7 @@ jobs:
       # - name: Setup SSH Agent
       #   uses: webfactory/ssh-agent@v0.5.0
       #   with:
-      #     ssh-private-key: private_key.pem  # Use the dynamically generated key file
+      #     ssh-private-key: private_key.pem  #
 
       # - name: Add EC2 host to known hosts
       #   run: ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }}>> ~/.ssh/known_hosts    

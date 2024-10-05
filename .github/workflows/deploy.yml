@@ -59,16 +59,23 @@ jobs:
           echo "private key saved"
         working-directory: ./infra
 
-      # Setup SSH using the key extracted dynamically from Terraform outputs
-      # - name: Setup SSH Agent
-      #   uses: webfactory/ssh-agent@v0.5.0
-      #   with:
-      #     ssh-private-key: private_key.pem  # Use the dynamically generated key file
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: private_key.pem  # Use the dynamically generated key file
 
       - name: Add EC2 host to known hosts
+        run: ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }}>> ~/.ssh/known_hosts    
+      
+      - name: Deploy to EC2
         run: |
-          ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-e-1.compute.amazonaws.com
-          echo "Hello world"
+          # Replace the following with your deployment script or commands
+          ssh ubuntu@${{ env.EC2_PUBLIC_IP }}  
+    
+        # - name: Add EC2 host to known hosts
+      #   run: |
+      #     ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-e-1.compute.amazonaws.com
+      #     echo "Hello world"
 
       #     ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
       #   env:

@@ -14,7 +14,7 @@ output "dns_name" {
 output "ssh_private_key" {
   description = "The private key for SSH access"
   value       = tls_private_key.pri_key.private_key_pem
-  sensitive   = true
+  # sensitive   = true
 }
 
 output "user_name" {

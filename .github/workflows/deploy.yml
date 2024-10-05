@@ -103,12 +103,12 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }}>> ~/.ssh/known_hosts
 
 
-      # - uses: easingthemes/ssh-deploy@v5.0.0
-      #   name: SSH into EC2 instance and run commands
-      #   with:
-      #     SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-      #     REMOTE_HOST: ${{ secrets.HOST }}
-      #     REMOTE_USER: ${{ secrets.USER }}
+      - uses: easingthemes/ssh-deploy@v5.0.0
+        name: SSH into EC2 instance and run commands
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USER: ${{ secrets.USER }}
       
 
 

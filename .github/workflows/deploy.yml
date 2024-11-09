@@ -59,10 +59,7 @@ jobs:
           # echo "private key saved"
         working-directory: ./infra
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.0
-        with:
-          ssh-private-key: private_key.pem 
+
 
 
   deploy_to_ec2:

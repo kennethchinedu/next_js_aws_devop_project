@@ -62,7 +62,11 @@ jobs:
 
       - name: run this
         run: | 
-
+  
+          # Start the ssh-agent
+          echo "Starting ssh-agent..."
+          eval "$(ssh-agent -s)"
+          
           # Start ssh-agent and add the private key
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 

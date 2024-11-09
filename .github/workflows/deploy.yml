@@ -68,30 +68,50 @@ jobs:
     needs: terraform # This ensures the job only runs after 'terraform_setup' is complete
     environment: staging
 
+
+    
+
     steps:
-      - name: Install SSH and Configure Key
-        run: |
-          # Install SSH client if not already installed
-          command -v ssh-agent >/dev/null || (apt-get update -y && apt-get install openssh-client -y)
-          # Start SSH agent
-          eval $(ssh-agent -s)
-          # Decode the base64 SSH private key and add it to the agent
-          echo "${{ secrets.AWS_EC2_PRIVATE_KEY_BASE64 }}" | base64 -d | ssh-add -
-          # Configure SSH settings
-          mkdir -p ~/.ssh
-          touch ~/.ssh/config
-          touch ~/.ssh/known_hosts
-          sudo chmod -R 400 ~/.ssh
-          # Set appropriate permissions to allow access to known_hosts
-          sudo chmod 644 ~/.ssh/known_hosts
-          # Add the EC2 public IP to known hosts
-          ssh-keyscan -H "${{ env.EC2_PUBLIC_IP }}" >> ~/.ssh/known_hosts
-          echo "SSH setup complete."
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add EC2 host to known hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to EC2
+      run: |
+        # Replace the following with your deployment script or commands
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }}
+        echo "Hello world"
+
+      
+      # - name: Install SSH and Configure Key
+      #   run: |
+      #     # Install SSH client if not already installed
+      #     command -v ssh-agent >/dev/null || (apt-get update -y && apt-get install openssh-client -y)
+      #     # Start SSH agent
+      #     eval $(ssh-agent -s)
+      #     # Decode the base64 SSH private key and add it to the agent
+      #     echo "${{ secrets.AWS_EC2_PRIVATE_KEY_BASE64 }}" | base64 -d | ssh-add -
+      #     # Configure SSH settings
+      #     mkdir -p ~/.ssh
+      #     touch ~/.ssh/config
+      #     touch ~/.ssh/known_hosts
+      #     sudo chmod -R 400 ~/.ssh
+      #     # Set appropriate permissions to allow access to known_hosts
+      #     sudo chmod 644 ~/.ssh/known_hosts
+      #     # Add the EC2 public IP to known hosts
+      #     ssh-keyscan -H "${{ env.EC2_PUBLIC_IP }}" >> ~/.ssh/known_hosts
+      #     echo "SSH setup complete."
 
 
-      - name: Connect and Deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
+      # - name: Connect and Deploy
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
 
 
 

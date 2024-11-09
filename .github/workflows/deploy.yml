@@ -60,7 +60,7 @@ jobs:
           # echo "private key saved"
         working-directory: ./infra
 
-        
+
       - name: Set up SSH
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
@@ -74,138 +74,29 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} 
           echo "Hello world"
 
-  #  --------   
-  #   - name: Setup SSH
-  #     uses: webfactory/ssh-agent@v0.5.0
-  #     with:
-  #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: 'Set up environment variables'
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          cp .env ./backend/.env
 
-  #   - name: Add EC2 host to known hosts
-  #     run: |
-  #       ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-
-  #   - name: Deploy to EC2
-  #     run: |
-  #       # Replace the following with your deployment script or commands
-  #       ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }}
-  #       echo "Hello world"
-
-      
-      # - name: Install SSH and Configure Key
-      #   run: |
-      #     # Install SSH client if not already installed
-      #     command -v ssh-agent >/dev/null || (apt-get update -y && apt-get install openssh-client -y)
-      #     # Start SSH agent
-      #     eval $(ssh-agent -s)
-      #     # Decode the base64 SSH private key and add it to the agent
-      #     echo "${{ secrets.AWS_EC2_PRIVATE_KEY_BASE64 }}" | base64 -d | ssh-add -
-      #     # Configure SSH settings
-      #     mkdir -p ~/.ssh
-      #     touch ~/.ssh/config
-      #     touch ~/.ssh/known_hosts
-      #     sudo chmod -R 400 ~/.ssh
-      #     # Set appropriate permissions to allow access to known_hosts
-      #     sudo chmod 644 ~/.ssh/known_hosts
-      #     # Add the EC2 public IP to known hosts
-      #     ssh-keyscan -H "${{ env.EC2_PUBLIC_IP }}" >> ~/.ssh/known_hosts
-      #     echo "SSH setup complete."
-
-
-      # - name: Connect and Deploy
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
-
-
-
-    #   - name: Setup SSH
-    #     uses: webfactory/ssh-agent@v0.5.3
-    #     with:
-    #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    #   - name: Connect and Deploy
-    #     run: |
-    #       ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
-
-      # - name: Ssh into Ec2
-      #   run: |
-      #     eval $(ssh-agent -s)
-      #     echo "$private_key.pem" > key.pem
-      #     cat key.pem
-      #     chmod 600 key.pem
-      #     ssh -vvv -i key.pem -o  StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} 
-      #     echo "Connected"
-
-
-#------------------
-
-      # - name: Setup SSH Agent
-      #   uses: webfactory/ssh-agent@v0.5.0
-      #   with:
-      #     ssh-private-key: private_key.pem  #
-
-      # - name: Add EC2 host to known hosts
-      #   run: ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }}>> ~/.ssh/known_hosts    
-      
-      # - name: Deploy to EC2
-      #   run: |
-      #     # Replace the following with your deployment script or commands
-      #     ssh ubuntu@${{ env.EC2_PUBLIC_IP }}  
-    
-        # - name: Add EC2 host to known hosts
-      #   run: |
-      #     ssh -i "private_key.pem" ${{secrets.USER}}@${{env.EC2_PUBLIC_IP}}.us-e-1.compute.amazonaws.com
-      #     echo "Hello world"
-
-      #     ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-      #   env:
-      #     EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
-
-      # - name: Deploy to EC2
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} << EOF
-      #       echo "Deploying application to EC2 instance..."
-      #       # Replace with your actual deployment commands
-      #       docker ps
-      #     EOF
-      #   env:
-      #     EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
-
-        
+      - name: 'Set up Docker'
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: 'latest' 
   
+      - name: 'Install docker-compose'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y docker-compose
 
-           
-  # ssh_into_ec2:
-  #   name: 'SSH into EC2 and Run Docker'
-  #   needs: terraform
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
-
-  #     # SSH into the EC2 instance
-  #     - name: 'SSH into EC2 and Pull Docker Image'
-  #       run: |
-  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
-  #         chmod 600 private_key.pem
-          
-  #         ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} << EOF
-            
-  #           #Log in to Docker hub
-  #           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-
-  #           # Pull Docker image
-  #           make pull
-
-  #           # Run Docker container
-  #           make run
-  #         EOF
-  #       env:
-  #         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # Public IP of the EC2 instance
-  #         EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}  # SSH private key stored in GitHub secrets
-
-  #     # Verify Docker container is running
-  #     - name: 'Verify Docker Container'
-  #       run: |
-  #         ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} "docker ps"
-  #         echo "rivate ip $LOAD_BALANCER"
+      - name: 'Run post-build tasks'
+        run: echo "This runs after the first workflow finishes"
+    
+      - name: 'Log in to Docker Hub'
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "login succesful"  

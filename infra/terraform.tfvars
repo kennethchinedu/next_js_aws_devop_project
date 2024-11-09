@@ -13,3 +13,4 @@ instance_type = "t2.micro"
 # key_path = "/path/to/your/key.pub"
 
 ## variables
+

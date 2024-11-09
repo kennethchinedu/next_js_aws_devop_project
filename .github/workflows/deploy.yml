@@ -69,14 +69,36 @@ jobs:
     environment: staging
 
     steps:
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install SSH and Configure Key
+        run: |
+          # Install SSH client if not already installed
+          command -v ssh-agent >/dev/null || (apt-get update -y && apt-get install openssh-client -y)
+          # Start SSH agent
+          eval $(ssh-agent -s)
+          # Load the SSH private key from secrets
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
+          # Configure SSH settings
+          mkdir -p ~/.ssh
+          touch ~/.ssh/config
+          touch ~/.ssh/known_hosts
+          chmod -R 400 ~/.ssh
+          # Add the EC2 public IP to known hosts
+          ssh-keyscan -H "${{ env.EC2_PUBLIC_IP }}" >> ~/.ssh/known_hosts
+          echo "SSH setup complete."
 
       - name: Connect and Deploy
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
+
+    # steps:
+    #   - name: Setup SSH
+    #     uses: webfactory/ssh-agent@v0.5.3
+    #     with:
+    #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    #   - name: Connect and Deploy
+    #     run: |
+    #       ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
 
       # - name: Ssh into Ec2
       #   run: |

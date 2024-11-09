@@ -10,11 +10,10 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: 'us-east-1'
-  
 
 jobs:
   terraform:
-    name: 'terraform_setup'
+    name: 'Terraform Setup'
     runs-on: ubuntu-latest
     environment: staging
 
@@ -30,7 +29,7 @@ jobs:
 
       - name: 'Terraform Init'
         run: terraform init -lock=false
-        working-directory: ./infra 
+        working-directory: ./infra
 
       - name: 'Terraform Plan'
         run: terraform plan -var-file=terraform.tfvars -lock=false
@@ -44,23 +43,26 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-1'
 
-      - name: Capture Terraform Outputs
+      - name: 'Capture Terraform Outputs'
         id: capture_outputs
         run: |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
-          # SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key 2>/dev/null || echo "")
           USER=$(terraform output -raw user_name 2>/dev/null || echo "")
 
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
           echo "USER=$USER" >> $GITHUB_ENV
 
-          # Format the SSH private key correctly and save to file
-          # echo -e "\n$SSH_PRIVATE_KEY\n" | sed 's/\\n/\n/g' > private_key.pem
-          # chmod 600 private_key.pem
-          # echo "private key saved"
-        working-directory: ./infra
+  ssh_setup:
+    name: 'Setup SSH and Deploy'
+    needs: terraform
+    runs-on: ubuntu-latest
+    environment: staging
 
-      - name: Set up SSH
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Set up SSH'
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
@@ -68,11 +70,12 @@ jobs:
           mv private_key ~/.ssh/
           ssh-keyscan -H ${EC2_PUBLIC_IP} >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2
+      - name: 'Deploy to EC2'
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} 
-          echo "Hello world"
-         
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} "echo Hello world"
+        env:
+          EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
+          USER: ${{ env.USER }}
 
 
 

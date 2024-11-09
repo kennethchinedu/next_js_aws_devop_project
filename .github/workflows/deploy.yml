@@ -47,16 +47,16 @@ jobs:
         id: capture_outputs
         run: |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip 2>/dev/null || echo "")
-          SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key 2>/dev/null || echo "")
+          # SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key 2>/dev/null || echo "")
           USER=$(terraform output -raw user_name 2>/dev/null || echo "")
 
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
           echo "USER=$USER" >> $GITHUB_ENV
 
           # Format the SSH private key correctly and save to file
-          echo -e "\n$SSH_PRIVATE_KEY\n" | sed 's/\\n/\n/g' > private_key.pem
-          chmod 600 private_key.pem
-          echo "private key saved"
+          # echo -e "\n$SSH_PRIVATE_KEY\n" | sed 's/\\n/\n/g' > private_key.pem
+          # chmod 600 private_key.pem
+          # echo "private key saved"
         working-directory: ./infra
 
       - name: Setup SSH
@@ -64,12 +64,10 @@ jobs:
         with:
           ssh-private-key: private_key.pem 
 
-      - name: Add EC2 host to known hosts
-        run: ssh-keyscan -H ${{ env.SSH_PRIVATE_KEY }} >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          # Replace the following with your deployment script or commands
+          
           ssh ubuntu@${{ env.EC2_PUBLIC_IP }}  "echo Hello world"
 
       # - name: Ssh into Ec2

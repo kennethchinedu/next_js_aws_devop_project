@@ -11,11 +11,11 @@ output "dns_name" {
   value       = aws_lb.lb.dns_name
 }
 
-output "ssh_private_key" {
-  description = "The private key for SSH access"
-  value       = tls_private_key.pri_key.private_key_pem
-  # sensitive   = true
-}
+# output "ssh_private_key" {
+#   description = "The private key for SSH access"
+#   value       = tls_private_key.pri_key.private_key_pem
+#   # sensitive   = true
+# }
 
 output "user_name" {
   description = "The username for SSH access"

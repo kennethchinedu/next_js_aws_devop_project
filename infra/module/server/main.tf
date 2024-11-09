@@ -79,21 +79,21 @@ resource "aws_route_table_association" "rt_association2" {
 # Creating security group with multiple ingress rules
 
 # Create private key
-resource "tls_private_key" "pri_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+# resource "tls_private_key" "pri_key" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
   
-}
+# }
 
-#Create key pair
-resource "aws_key_pair" "keypair" {
-  key_name   = "keypair"
-  public_key = tls_private_key.pri_key.public_key_openssh
+# #Create key pair
+# resource "aws_key_pair" "keypair" {
+#   key_name   = "keypair"
+#   public_key = tls_private_key.pri_key.public_key_openssh
 
-  provisioner "local-exec" {
-    command = "echo '${tls_private_key.pri_key.private_key_pem}' > ./my-keypair.pem && chmod 400 ./my-keypair.pem"
-  }
-}
+#   provisioner "local-exec" {
+#     command = "echo '${tls_private_key.pri_key.private_key_pem}' > ./my-keypair.pem && chmod 400 ./my-keypair.pem"
+#   }
+# }
 
 
 
@@ -143,7 +143,7 @@ resource "aws_instance" "server1" {
   vpc_security_group_ids = [aws_security_group.sg.id]
   ami                    = var.ami
   instance_type          = var.instance_type
-  key_name      = aws_key_pair.keypair.key_name 
+  key_name      = "_testdev_keypair"
   subnet_id             = aws_subnet.subnet1.id  
   user_data = base64encode(file("setup.sh"))
 

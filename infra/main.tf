@@ -27,11 +27,11 @@ output "dns_name" {
   value       = module.app-deployment.dns_name
 }
 
-output "ssh_private_key" {
-  description = "private key for seriver"
-  value       = module.app-deployment.ssh_private_key
-  sensitive   = true
-}
+# output "ssh_private_key" {
+#   description = "private key for seriver"
+#   value       = module.app-deployment.ssh_private_key
+#   sensitive   = true
+# }
 
 output "user_name" {
   description = "user name for server"

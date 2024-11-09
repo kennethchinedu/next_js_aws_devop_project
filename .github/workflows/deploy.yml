@@ -81,7 +81,7 @@ jobs:
           mkdir -p ~/.ssh
           touch ~/.ssh/config
           touch ~/.ssh/known_hosts
-          chmod -R 400 ~/.ssh
+          sudo chmod -R 400 ~/.ssh
           # Add the EC2 public IP to known hosts
           ssh-keyscan -H "${{ env.EC2_PUBLIC_IP }}" >> ~/.ssh/known_hosts
           echo "SSH setup complete."
@@ -91,7 +91,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ubuntu@${{ env.EC2_PUBLIC_IP }} "echo Hello world"
 
 
-          # steps:
+
     #   - name: Setup SSH
     #     uses: webfactory/ssh-agent@v0.5.3
     #     with:

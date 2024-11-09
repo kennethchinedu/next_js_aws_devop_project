@@ -60,32 +60,17 @@ jobs:
           # echo "private key saved"
         working-directory: ./infra
 
-      - name: run this
-        run: | 
-  
-          # Start the ssh-agent
-          echo "Starting ssh-agent..."
-          eval "$(ssh-agent -s)"
-          
-          # Save the AWS EC2 private key from the GitHub secret to a file
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
-          
-          # Ensure the key file has the correct permissions
-          sudo chmod 600 private_key.pem
-    
-          # Add the private key to ssh-agent
-          ssh-add private_key.pem
-
-          # Create the .ssh directory if it doesn't exist
+      - name: Set up SSH
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
           mkdir -p ~/.ssh
-    
-          # Add EC2 public key to known hosts to prevent prompts
-          ssh-keyscan -H $EC2_PUBLIC_IP >> ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-    
-          # Now, use SSH to deploy to EC2 (you can replace the echo command with your actual deployment script)
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$EC2_PUBLIC_IP "echo Hello world"
-    
+          mv private_key ~/.ssh/
+          ssh-keyscan -H ${EC2_PUBLIC_IP} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} "cd /home/ubuntu/github_code_base && git pull origin main"
 
 
          

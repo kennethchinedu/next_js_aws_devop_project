@@ -66,6 +66,7 @@ jobs:
     name: 'Deploy to EC2'
     runs-on: ubuntu-latest
     needs: terraform # This ensures the job only runs after 'terraform_setup' is complete
+    environment: staging
 
     steps:
       - name: Setup SSH

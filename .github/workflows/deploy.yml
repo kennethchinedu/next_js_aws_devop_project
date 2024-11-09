@@ -78,11 +78,20 @@ jobs:
 
       - name: SSH into server
         run: |
+          # echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          # chmod 600 private_key
+          # mkdir -p ~/.ssh
+          # mv private_key ~/.ssh/
+          # ssh-keyscan -H ${EC2_PUBLIC_IP} >> ~/.ssh/known_hosts
+
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
           mkdir -p ~/.ssh
           mv private_key ~/.ssh/
-          ssh-keyscan -H ${EC2_PUBLIC_IP} >> ~/.ssh/known_hosts
+          # Ensure EC2_PUBLIC_IP is properly referenced
+          ssh-keyscan -H ${{ env.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
+
+
 
       - name: Deploy to EC2
         run: |

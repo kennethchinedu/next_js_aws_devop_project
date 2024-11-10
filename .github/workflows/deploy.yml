@@ -85,8 +85,8 @@ jobs:
             # Make sure the server_setup.sh file is executable
             chmod +x ./server_setup.sh;
     
-          # Run the server setup script
-          ./server_setup.sh;
+            # Run the server setup script
+            ./server_setup.sh;
           "
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -80,7 +80,7 @@ jobs:
       
             # Run the server setup script
             ./server_setup.sh
-
+EOF
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}

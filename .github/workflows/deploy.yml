@@ -75,7 +75,8 @@ jobs:
           # Updating package lists and install 'make' if not already installed
           if ! command -v make &> /dev/null; then
             sudo apt-get update -y
-            sudo apt-get install -y make
+            sudo apt-get install -y make 
+            echo "make installed successfully"
           fi
 
           # Set up environment variables (if needed)

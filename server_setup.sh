@@ -7,7 +7,8 @@ sudo apt-get update -y
 # Install Make if not installed
 if ! command -v make &> /dev/null; then
     echo "Make not found. Installing Make..."
-    sudo apt-get install -y make
+    sudo apt install make -y 
+    echo "make installed successfully"
 fi
 
 # Install Docker and Docker Compose if not installed

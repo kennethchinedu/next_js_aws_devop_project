@@ -61,10 +61,10 @@ echo "Docker login successful."
 # Function to check if a container is running and stop/remove it if necessary
 check_container_status() {
     CONTAINER_NAME=$1
-    if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+    if [ "$(sudo docker ps -q -f name=$CONTAINER_NAME)" ]; then
         echo "Container $CONTAINER_NAME is running. Stopping and removing it..."
-        docker stop $CONTAINER_NAME
-        docker rm $CONTAINER_NAME
+        sudo docker stop $CONTAINER_NAME
+        sudo docker rm $CONTAINER_NAME
         if [ $? -ne 0 ]; then
             echo "Failed to stop/remove container $CONTAINER_NAME. Exiting..."
             exit 1
@@ -85,7 +85,7 @@ check_container_status "$BACKEND_IMAGE"
 
 #pulling frontend image
 echo "Pulling frontend Docker image..."
-docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
+sudo docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to pull frontend image. Exiting..."
     exit 1
@@ -95,7 +95,7 @@ echo "Frontend Docker image pulled successfully."
 
 # Pull the backend Docker image
 echo "Pulling backend Docker image..."
-docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
+sudo docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to pull backend image. Exiting..."
     exit 1
@@ -106,7 +106,7 @@ echo "Backend Docker image pulled successfully."
 
 # Run the frontend container
 echo "Running the frontend container..."
-docker run -d --name "$FRONTEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
+sudo docker run -d --name "$FRONTEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to run frontend container. Exiting..."
     exit 1
@@ -115,7 +115,7 @@ echo "Frontend container is now running."
 
 # Run the backend container
 echo "Running the backend container..."
-docker run -d --name "$BACKEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
+sudo docker run -d --name "$BACKEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to run backend container. Exiting..."
     exit 1

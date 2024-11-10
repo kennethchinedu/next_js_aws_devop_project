@@ -1,5 +1,12 @@
 #!/bin/bash
 
+
+# Docker registry and image details
+IMAGE_REG="docker.io"  # You can change this to another registry if needed
+IMAGE_DIRECTORY="anamskenneth"
+FRONTEND_IMAGE="next_js_aws_devop_project_frontend"
+BACKEND_IMAGE="next_js_aws_devop_project_backend"
+
 # Update package lists and install dependencies
 echo "Updating package lists..."
 sudo apt-get update -y
@@ -22,29 +29,97 @@ if ! command -v docker-compose &> /dev/null; then
     sudo apt-get install -y docker-compose
 fi
 
+
+
 # Set environment variables (using values from the script or .env file)
-echo "Setting up environment variables..."
-echo "DATABASE_URL=${DATABASE_URL}" >> ~/.env
-echo "POSTGRES_DB=${POSTGRES_DB}" >> ~/.env
-echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> ~/.env
-echo "POSTGRES_PORT=${POSTGRES_PORT}" >> ~/.env
-echo "POSTGRES_USER=${POSTGRES_USER}" >> ~/.env
-echo "DOCKER_USERNAME=${DOCKER_USERNAME}" >> ~/.env
-echo "DOCKER_PASSWORD=${DOCKER_PASSWORD}" >> ~/.env
+echo "export DATABASE_URL=${DATABASE_URL}" >> ~/.bashrc
+echo "export POSTGRES_DB=${POSTGRES_DB}" >> ~/.bashrc
+echo "export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> ~/.bashrc
+echo "export POSTGRES_PORT=${POSTGRES_PORT}" >> ~/.bashrc
+echo "export POSTGRES_USER=${POSTGRES_USER}" >> ~/.bashrc
+echo "export DOCKER_USERNAME=${DOCKER_USERNAME}" >> ~/.bashrc
+echo "export DOCKER_PASSWORD=${DOCKER_PASSWORD}" >> ~/.bashrc
+
+echo "Enviromental variables added successfully"
 
 # Make sure Docker service is running
 echo "Starting Docker service..."
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# Pull the Docker image from Docker Hub
-# echo "Pulling Docker image..."
-# docker pull your-docker-image-name
 
-# Start the containers using Docker Compose (make sure your docker-compose.yml is present)
-echo "Starting Docker Compose..."
-# docker-compose up -d
+#docker login
+echo "Logging into Docker..."
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+if [ $? -ne 0 ]; then
+    echo "Docker login failed. Exiting..."
+    exit 1
+fi
+echo "Docker login successful."
 
-# Any additional configurations or tasks can be added here...
+
+# Function to check if a container is running and stop/remove it if necessary
+check_container_status() {
+    CONTAINER_NAME=$1
+    if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+        echo "Container $CONTAINER_NAME is running. Stopping and removing it..."
+        docker stop $CONTAINER_NAME
+        docker rm $CONTAINER_NAME
+        if [ $? -ne 0 ]; then
+            echo "Failed to stop/remove container $CONTAINER_NAME. Exiting..."
+            exit 1
+        fi
+        echo "Container $CONTAINER_NAME stopped and removed successfully."
+    else
+        echo "Container $CONTAINER_NAME is not running."
+    fi
+}
+
+
+# Check if frontend container is running, stop/remove if necessary
+check_container_status "$FRONTEND_IMAGE"
+
+# Check if backend container is running, stop/remove if necessary
+check_container_status "$BACKEND_IMAGE"
+
+
+#pulling frontend image
+echo "Pulling frontend Docker image..."
+docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
+if [ $? -ne 0 ]; then
+    echo "Failed to pull frontend image. Exiting..."
+    exit 1
+fi
+echo "Frontend Docker image pulled successfully."
+
+
+# Pull the backend Docker image
+echo "Pulling backend Docker image..."
+docker pull "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
+if [ $? -ne 0 ]; then
+    echo "Failed to pull backend image. Exiting..."
+    exit 1
+fi
+echo "Backend Docker image pulled successfully."
+
+
+
+# Run the frontend container
+echo "Running the frontend container..."
+docker run -d --name "$FRONTEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
+if [ $? -ne 0 ]; then
+    echo "Failed to run frontend container. Exiting..."
+    exit 1
+fi
+echo "Frontend container is now running."
+
+# Run the backend container
+echo "Running the backend container..."
+docker run -d --name "$BACKEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
+if [ $? -ne 0 ]; then
+    echo "Failed to run backend container. Exiting..."
+    exit 1
+fi
+echo "Backend container is now running."
 
 echo "Setup complete."

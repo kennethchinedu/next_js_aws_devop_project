@@ -62,6 +62,25 @@ jobs:
 
 
       - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} << 'EOF'
+            echo "Sign-in successful, initiating setup..."
+          
+            # Export environment variables for use in the script
+            export DATABASE_URL=${DATABASE_URL}
+            export POSTGRES_DB=${POSTGRES_DB}
+            export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            export POSTGRES_PORT=${POSTGRES_PORT}
+            export POSTGRES_USER=${POSTGRES_USER}
+            export DOCKER_USERNAME=${DOCKER_USERNAME}
+            export DOCKER_PASSWORD=${DOCKER_PASSWORD}
+          
+            # Make sure the server_setup.sh file is executable
+            chmod +x ./server_setup.sh
+          
+            # Run the server setup script
+            ./server_setup.sh
+    EOF
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -70,28 +89,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP} << 'EOF'
-          # ssh -o StrictHostKeyChecking=no -i ~/.ssh/private_key ${USER}@${EC2_PUBLIC_IP}
-          echo "Sign-in successful, initiating setup..."
-    
-          # Export environment variables for use in the script
-          export DATABASE_URL=${DATABASE_URL}
-          export POSTGRES_DB=${POSTGRES_DB}
-          export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-          export POSTGRES_PORT=${POSTGRES_PORT}
-          export POSTGRES_USER=${POSTGRES_USER}
-          export DOCKER_USERNAME=${DOCKER_USERNAME}
-          export DOCKER_PASSWORD=${DOCKER_PASSWORD}
-    
-          # Make sure the server_setup.sh file is executable
-          chmod +x ./server_setup.sh
-    
-          # Run the server setup script
-          ./server_setup.sh
-          EOF
-    
-  
+      
 
 
       # - name: Deploy to EC2

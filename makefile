@@ -23,7 +23,7 @@ docker_login:
 	echo "Docker login successful"
 
 image: #Build frontend and backend container images using docker-compose
-	docker-compose -f docker-compose.yml build frontend backend
+	docker-compose -f docker-compose.yml build frontend backend \
 
 
 

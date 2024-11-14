@@ -9,23 +9,20 @@ BACKEND_IMAGE := next_js_aws_devop_project_backend
 # Don't change
 SRC_DIR := src
 
-
 help:  # 💬 This help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 docker_setup: 
-	if ! command -v docker-compose &> /dev/null; then
-    	sudo apt-get install -y docker-compose
+	if ! command -v docker-compose &> /dev/null; then \
+    	sudo apt-get install -y docker-compose; \
     fi 
 
 docker_login: 
-	echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-	echo "Docker login successful"
+	echo $${{ secrets.DOCKER_PASSWORD }} | docker login -u $${{ secrets.DOCKER_USERNAME }} --password-stdin; \
+	echo "Docker login successful";
 
 image: #Build frontend and backend container images using docker-compose
-	docker-compose -f docker-compose.yml build frontend backend \
-
-
+	docker-compose -f docker-compose.yml build frontend backend
 
 ps: #Build frontend and backend container images using docker-compose
 	docker images

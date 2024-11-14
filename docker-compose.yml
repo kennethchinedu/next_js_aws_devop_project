@@ -48,6 +48,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     # command: npm run dev
 
+
   
 
 volumes:

@@ -106,7 +106,7 @@ echo "Backend Docker image pulled successfully."
 
 # Run the frontend container
 echo "Running the frontend container..."
-sudo docker run -d --name "$FRONTEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
+sudo docker run -d -p 5137:5137 --name "$FRONTEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$FRONTEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to run frontend container. Exiting..."
     exit 1
@@ -115,7 +115,7 @@ echo "Frontend container is now running."
 
 # Run the backend container
 echo "Running the backend container..."
-sudo docker run -d --name "$BACKEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
+sudo docker run -d -p 8080:8080 --name "$BACKEND_IMAGE" "$IMAGE_REG/$IMAGE_DIRECTORY/$BACKEND_IMAGE:latest"
 if [ $? -ne 0 ]; then
     echo "Failed to run backend container. Exiting..."
     exit 1

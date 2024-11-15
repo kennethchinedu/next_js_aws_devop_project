@@ -39,9 +39,9 @@ jobs:
         working-directory: ./backend
         run: npm install 
         
-      - name: 'Run Data Migration'
-        working-directory: ./backend
-        run: npx prisma migrate dev 
+      # - name: 'Run Data Migration'
+      #   working-directory: ./backend
+      #   run: npx prisma migrate dev 
         
       - name: 'Build Backend Server'
         working-directory: ./backend

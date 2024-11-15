@@ -42,9 +42,12 @@ pull: # Push frontend and backend container images to registry
 	docker pull $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG
 
 run:
-	docker run -d --name backend-app $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG \
-	docker run -d -p 5137:5137 --name frontend-app $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$$IMAGE_TAG
+	# docker run -d --name backend-app $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$$IMAGE_TAG \
+	# docker run -d -p 5137:5137 --name frontend-app $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$$IMAGE_TAG
 	
+	docker run -d --name backend-app -p 8080:8080 $(IMAGE_DIRECTORY)/$(BACKEND_IMAGE):$(IMAGE_TAG)
+	# Start the frontend container
+	docker run -d --name frontend-app -p 5173:5173 $(IMAGE_DIRECTORY)/$(FRONTEND_IMAGE):$(IMAGE_TAG)
 
 
 up: ## ⬆️  Bring up the services locally with docker-compose

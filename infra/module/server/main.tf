@@ -210,7 +210,7 @@ resource "aws_lb_target_group_attachment" "attach_server1" {
 #creating load balancer lister
 resource "aws_lb_listener" "lb_listener" {
   load_balancer_arn = aws_lb.lb.arn  
-  port = 5173 
+  port = 80 
   protocol = "HTTP"
 
   default_action {

@@ -115,7 +115,7 @@ resource "aws_security_group" "sg" {
     description = "HTTP TLS to VPC"
     from_port   = 5173
     to_port     = 5173
-    protocol    = "http"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
